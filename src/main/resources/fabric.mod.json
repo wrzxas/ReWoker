@@ -1,25 +1,21 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "autortp-addon",
   "version": "${version}",
-  "name": "Addon Template",
-  "description": "An addon template for Meteor Client addons.",
+  "name": "AutoRTP",
+  "description": "AutoRTP addon.",
   "authors": [
-    "seasnail"
+    "wrzxas"
   ],
   "contact": {
-    "sources": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "sources": "https://github.com/wrzxas/autortp-addon"
   },
-  "icon": "assets/template/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "com.example.addon.AddonTemplate"
+      "org.wrzxas.AutoRTPAddon"
     ]
   },
-  "mixins": [
-    "addon-template.mixins.json"
-  ],
   "custom": {
     "meteor-client:color": "225,25,25",
     "modmenu": {
