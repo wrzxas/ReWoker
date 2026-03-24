@@ -26,6 +26,6 @@ public class AutoRTPAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("wrzxas", "autortp-addon");
+        return new GithubRepo("wrzxas", "AutoRTP");
     }
 }

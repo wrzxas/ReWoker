@@ -8,7 +8,7 @@
     "wrzxas"
   ],
   "contact": {
-    "sources": "https://github.com/wrzxas/autortp-addon"
+    "sources": "https://github.com/wrzxas/AutoRTP"
   },
   "environment": "client",
   "entrypoints": {
@@ -16,6 +16,9 @@
       "org.wrzxas.AutoRTPAddon"
     ]
   },
+  "mixins": [
+    "autortp-addon.mixins.json"
+  ],
   "custom": {
     "meteor-client:color": "225,25,25",
     "modmenu": {

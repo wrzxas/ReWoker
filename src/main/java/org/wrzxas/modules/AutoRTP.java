@@ -41,7 +41,7 @@ public class AutoRTP extends Module {
     );
 
     public AutoRTP() {
-        super(AutoRTPAddon.CATEGORY, "autortp", "Automatically send /rtp when player locate in some biomes.");
+        super(AutoRTPAddon.CATEGORY, "auto-rtp", "Automatically send /rtp when player locate in some biomes.");
     }
 
     @EventHandler
@@ -50,7 +50,7 @@ public class AutoRTP extends Module {
         timer++;
         RegistryKey<Biome> biome = mc.world.getBiome(mc.player.getBlockPos()).getKey().orElse(null);
         if (listMode.get() == ListMode.Blacklist && blacklist.get().contains(biome)) return;
-        if (listMode.get() == ListMode.Blacklist && !whitelist.get().contains(biome)) return;
+        if (listMode.get() == ListMode.Whitelist && !whitelist.get().contains(biome)) return;
         if (timer >= 410) {
             mc.player.networkHandler.sendChatCommand("rtp");
             timer = 0;
