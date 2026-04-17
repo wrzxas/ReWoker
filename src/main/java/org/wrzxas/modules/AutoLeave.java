@@ -35,7 +35,6 @@ public class AutoLeave extends Module {
     private final Setting<Integer> vPlayers = leaveIf.add(new IntSetting.Builder()
         .name("distance-to-player")
         .defaultValue(50)
-        .range(5, 300)
         .sliderRange(5, 300)
         .visible(players::get)
         .build()
@@ -124,24 +123,21 @@ public class AutoLeave extends Module {
     private void onTick(TickEvent.Post event) {
         if (mc.player == null || mc.world == null) return;
 
-        if (players.get() && anyPlayerInRange(vPlayers.get())) {
+        if (players.get() && anyPlayerInRange(vPlayers.get()))
             process("player-nearby", aPlayers.get(), cPlayers.get());
-        }
 
-        if (health.get() && mc.player.getHealth() <= vHealth.get()) {
+        if (health.get() && mc.player.getHealth() <= vHealth.get())
             process("low-hp", aHealth.get(), cHealth.get());
-        }
 
-        if (blocks.get() && isInsideSelectedBlock()) {
+        if (blocks.get() && isInsideSelectedBlock())
             process("in-block", aBlocks.get(), cBlocks.get());
-        }
     }
 
     private void process(String reason, Action action, String cmd) {
         if (autoDisable.get()) toggle();
 
         switch (action) {
-            case Leave -> mc.getNetworkHandler().getConnection().disconnect(Text.literal("AutoLeave | " + reason));
+            case Leave -> mc.disconnect(Text.literal("AutoLeave | " + reason));
             case Hub -> mc.player.networkHandler.sendChatCommand("hub");
             case Chat -> {
                 if (cmd.isBlank()) break;
@@ -164,7 +160,6 @@ public class AutoLeave extends Module {
 
     private boolean isInsideSelectedBlock() {
         if (vBlocks.get().isEmpty()) return false;
-
         return vBlocks.get().contains(mc.world.getBlockState(mc.player.getBlockPos()).getBlock());
     }
 

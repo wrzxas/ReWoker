@@ -24,7 +24,8 @@ public class AutoRTP extends Module {
         .name("list-mode")
         .description("Selection mode")
         .defaultValue(ListMode.Blacklist)
-        .build());
+        .build()
+    );
 
     private final Setting<Set<RegistryKey<Biome>>> blacklist = sgGeneral.add(new BiomeListSetting.Builder()
         .name("blacklist")
