@@ -19,13 +19,6 @@ public class AutoLeave extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup leaveIf = settings.createGroup("Leave if");
 
-    private final Setting<Boolean> antiKtLeave = sgGeneral.add(new BoolSetting.Builder()
-        .name("anti-kt-leave")
-        .description("Prevents leaving in combat.")
-        .defaultValue(false)
-        .build()
-    );
-
     private final Setting<Boolean> autoDisable = sgGeneral.add(new BoolSetting.Builder()
         .name("auto-disable")
         .description("Disables module after action.")
@@ -123,29 +116,6 @@ public class AutoLeave extends Module {
         .build()
     );
 
-    private final Setting<Double> vStaff = leaveIf.add(new DoubleSetting.Builder()
-        .name("only-if-spec")
-        .defaultValue(4)
-        .range(0, 20)
-        .sliderRange(0, 20)
-        .visible(staff::get)
-        .build()
-    );
-
-    private final Setting<Action> aStaff = leaveIf.add(new EnumSetting.Builder<Action>()
-        .name("staff-action")
-        .defaultValue(Action.Hub)
-        .visible(staff::get)
-        .build()
-    );
-
-    private final Setting<String> cStaff = leaveIf.add(new StringSetting.Builder()
-        .name("staff-message")
-        .defaultValue("")
-        .visible(() -> staff.get() && aStaff.get() == Action.Chat)
-        .build()
-    );
-
     public AutoLeave() {
         super(Kopateli.CATEGORY, "auto-leave", "desc");
     }
@@ -165,14 +135,10 @@ public class AutoLeave extends Module {
         if (blocks.get() && isInsideSelectedBlock()) {
             process("in-block", aBlocks.get(), cBlocks.get());
         }
-
-        /*if (staff.get() && Managers.staff.anyOnline(vStaff.get())) TODO staff manager
-            process("staff", aStaff.get(), cStaff.get());*/
     }
 
     private void process(String reason, Action action, String cmd) {
         if (autoDisable.get()) toggle();
-        /*if (antiKtLeave.get() && Managers.combat.inPvp()) return; TODO combat manager*/
 
         switch (action) {
             case Leave -> mc.getNetworkHandler().getConnection().disconnect(Text.literal("AutoLeave | " + reason));
