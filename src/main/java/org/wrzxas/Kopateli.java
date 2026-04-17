@@ -4,14 +4,17 @@ import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import org.wrzxas.modules.AutoLeave;
 import org.wrzxas.modules.AutoRTP;
 
-public class AutoRTPAddon extends MeteorAddon {
-    public static final Category CATEGORY = new Category("ByExpiry");
+public class Kopateli extends MeteorAddon {
+    public static final Category CATEGORY = new Category("Копатели");
 
     @Override
     public void onInitialize() {
-        Modules.get().add(new AutoRTP());
+        Modules m = Modules.get();
+        m.add(new AutoRTP());
+        m.add(new AutoLeave());
     }
 
     @Override
@@ -26,6 +29,6 @@ public class AutoRTPAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("wrzxas", "AutoRTP");
+        return new GithubRepo("wrzxas", "Kopateli");
     }
 }

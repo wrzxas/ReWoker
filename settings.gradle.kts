@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "autortp-addon"
+rootProject.name = "kopateli"

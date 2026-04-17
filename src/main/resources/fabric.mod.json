@@ -2,22 +2,22 @@
   "schemaVersion": 1,
   "id": "autortp-addon",
   "version": "${version}",
-  "name": "AutoRTP",
-  "description": "AutoRTP addon.",
+  "name": "Kopateli",
+  "description": "копатели читмайн дексленд итд..",
   "authors": [
     "wrzxas"
   ],
   "contact": {
-    "sources": "https://github.com/wrzxas/AutoRTP"
+    "sources": "https://github.com/wrzxas/Kopateli"
   },
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "org.wrzxas.AutoRTPAddon"
+      "org.wrzxas.Kopateli"
     ]
   },
   "mixins": [
-    "autortp-addon.mixins.json"
+    "kopateli.mixins.json"
   ],
   "custom": {
     "meteor-client:color": "225,25,25",

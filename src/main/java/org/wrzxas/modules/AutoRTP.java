@@ -9,7 +9,7 @@ import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import org.wrzxas.AutoRTPAddon;
+import org.wrzxas.Kopateli;
 import org.wrzxas.settings.BiomeListSetting;
 
 import java.util.Set;
@@ -41,7 +41,7 @@ public class AutoRTP extends Module {
     );
 
     public AutoRTP() {
-        super(AutoRTPAddon.CATEGORY, "auto-rtp", "Automatically send /rtp when player locate in some biomes.");
+        super(Kopateli.CATEGORY, "auto-rtp", "Automatically send /rtp when player locate in some biomes.");
     }
 
     @EventHandler
