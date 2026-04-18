@@ -17,6 +17,8 @@ import net.minecraft.block.Block;
 import java.util.List;
 
 public class AutoLeave extends Module {
+    private long sendTimer = -1;
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup leaveIf = settings.createGroup("leave-if");
 
@@ -146,12 +148,8 @@ public class AutoLeave extends Module {
 
         switch (action) {
             case Leave -> mc.disconnect(Text.literal("AutoLeave | " + reason));
-            case Hub -> mc.player.networkHandler.sendChatCommand("hub");
-            case Chat -> {
-                if (cmd.isBlank()) break;
-                if (cmd.startsWith("/")) mc.player.networkHandler.sendChatCommand(cmd.substring(1));
-                else mc.player.networkHandler.sendChatMessage(cmd);
-            }
+            case Hub -> send("/hub");
+            case Chat -> send(cmd);
         }
     }
 
@@ -169,6 +167,15 @@ public class AutoLeave extends Module {
     private boolean isInsideSelectedBlock() {
         if (vBlocks.get().isEmpty()) return false;
         return vBlocks.get().contains(mc.world.getBlockState(mc.player.getBlockPos()).getBlock());
+    }
+
+    private void send(String msg) {
+        if (msg.isBlank()) return;
+        if (this.sendTimer != -1 && System.currentTimeMillis() - this.sendTimer < 1000) return;
+        if (msg.startsWith("/")) mc.player.networkHandler.sendChatCommand(msg.substring(1));
+        else mc.player.networkHandler.sendChatMessage(msg);
+
+        this.sendTimer = System.currentTimeMillis();
     }
 
     public enum Action {
