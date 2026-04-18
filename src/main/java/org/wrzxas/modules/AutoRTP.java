@@ -1,5 +1,6 @@
 package org.wrzxas.modules;
 
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -7,6 +8,7 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import org.wrzxas.Kopateli;
@@ -15,10 +17,10 @@ import org.wrzxas.settings.BiomeListSetting;
 import java.util.Set;
 
 public class AutoRTP extends Module {
-    private int timer = 0;
+    private long lastTp = -1;
+    private boolean tp = false;
 
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-
 
     private final Setting<ListMode> listMode = sgGeneral.add(new EnumSetting.Builder<ListMode>()
         .name("list-mode")
@@ -48,14 +50,22 @@ public class AutoRTP extends Module {
     @EventHandler
     public void onEvent(TickEvent.Pre ignored) {
         if (!Utils.canUpdate()) return;
-        timer++;
+
         RegistryKey<Biome> biome = mc.world.getBiome(mc.player.getBlockPos()).getKey().orElse(null);
         if (listMode.get() == ListMode.Blacklist && blacklist.get().contains(biome)) return;
         if (listMode.get() == ListMode.Whitelist && !whitelist.get().contains(biome)) return;
-        if (timer >= 410) {
+        if (lastTp == -1 || System.currentTimeMillis() - lastTp >= 21000) {
+            tp = true;
             mc.player.networkHandler.sendChatCommand("rtp");
-            timer = 0;
+            tp = false;
+            lastTp = System.currentTimeMillis();
         }
+    }
+
+    @EventHandler
+    public void onEvent(PacketEvent.Send e) {
+        if (!tp && e.packet instanceof CommandExecutionC2SPacket(String command) && command.equals("/rtp"))
+            lastTp = System.currentTimeMillis();
     }
 
     public enum ListMode {

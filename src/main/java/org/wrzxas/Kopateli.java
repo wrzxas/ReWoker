@@ -2,10 +2,11 @@ package org.wrzxas;
 
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import org.wrzxas.modules.AutoLeave;
-import org.wrzxas.modules.AutoRTP;
+import org.wrzxas.commands.FinderCommand;
+import org.wrzxas.modules.*;
 
 public class Kopateli extends MeteorAddon {
     public static final Category CATEGORY = new Category("Копатели");
@@ -15,6 +16,8 @@ public class Kopateli extends MeteorAddon {
         Modules m = Modules.get();
         m.add(new AutoRTP());
         m.add(new AutoLeave());
+        m.add(new AutoSkid());
+        Commands.add(new FinderCommand());
     }
 
     @Override
