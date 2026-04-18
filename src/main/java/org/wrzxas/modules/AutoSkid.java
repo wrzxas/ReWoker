@@ -24,7 +24,7 @@ public class AutoSkid extends Module {
     private int hash = -1;
 
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-    private final SettingGroup sgActions = this.settings.createGroup("actions");
+    private final SettingGroup sgActions = this.settings.createGroup("After skid");
 
     private final Setting<SkidMode> skidMode = sgGeneral.add(new EnumSetting.Builder<SkidMode>()
         .name("skid-mode")
@@ -42,7 +42,7 @@ public class AutoSkid extends Module {
 
     private final Setting<Integer> skidDelay = sgGeneral.add(new IntSetting.Builder()
         .name("skid-delay")
-        .description("Delay between each item action.")
+        .description("Delay between each skid action.")
         .range(0, 200)
         .defaultValue(0)
         .build()
@@ -71,7 +71,7 @@ public class AutoSkid extends Module {
     );
 
     private final Setting<List<String>> postActions = sgActions.add(new StringListSetting.Builder()
-        .name("post-actions")
+        .name("actions")
         .description("Actions to run after skid items.")
         .defaultValue("/rtp")
         .build()
@@ -86,25 +86,27 @@ public class AutoSkid extends Module {
     );
 
     public AutoSkid() {
-        super(Kopateli.CATEGORY, "auto-skid", "Automatically teleports, skids selected items, and runs post actions.");
+        super(Kopateli.CATEGORY, "auto-skid", "Automatically teleports, skids selected items, and runs actions after skid.");
     }
 
     @Override
     public void onActivate() {
-        state = State.IDLE;
-        actionIdx = 0;
         hash = -1;
-        lastTp = mc.player.age;
-        lastSkid = -1;
-        lastAction = -1;
-    }
-
-    @Override
-    public void onDeactivate() {
         lastTp = -1;
         lastSkid = -1;
         lastAction = -1;
         state = State.IDLE;
+        actionIdx = 0;
+    }
+
+    @Override
+    public void onDeactivate() {
+        hash = -1;
+        lastTp = -1;
+        lastSkid = -1;
+        lastAction = -1;
+        state = State.IDLE;
+        actionIdx = 0;
     }
 
     @EventHandler
@@ -128,7 +130,10 @@ public class AutoSkid extends Module {
                 if (skid()) state = State.POST;
             }
             case POST -> {
-                if (actions()) state = State.IDLE;
+                if (actions()) {
+                    lastTp = mc.player.age;
+                    state = State.IDLE;
+                }
             }
         }
     }
