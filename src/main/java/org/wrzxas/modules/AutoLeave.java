@@ -15,16 +15,20 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import net.minecraft.block.Block;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+@SuppressWarnings("DataFlowIssue")
 public class AutoLeave extends Module {
-    private long sendTimer = -1;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private int sendTimer = -1;
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-    private final SettingGroup leaveIf = settings.createGroup("leave-if");
+    private final SettingGroup leaveIf = settings.createGroup("Leave if");
 
     private final Setting<Boolean> autoDisable = sgGeneral.add(new BoolSetting.Builder()
         .name("auto-disable")
-        .description("Disable the module after executing an action.")
+        .description("Disable module after executing an action.")
         .defaultValue(true)
         .build()
     );
@@ -54,10 +58,9 @@ public class AutoLeave extends Module {
         .build()
     );
 
-    private final Setting<String> cPlayers = leaveIf.add(new StringSetting.Builder()
+    private final Setting<List<String>> cPlayers = leaveIf.add(new StringListSetting.Builder()
         .name("player-message")
-        .description("Message to send when player action is set to chat.")
-        .defaultValue("")
+        .description("Messages to send when player action is set to chat.")
         .visible(() -> players.get() && aPlayers.get() == Action.Chat)
         .build()
     );
@@ -87,10 +90,9 @@ public class AutoLeave extends Module {
         .build()
     );
 
-    private final Setting<String> cHealth = leaveIf.add(new StringSetting.Builder()
+    private final Setting<List<String>> cHealth = leaveIf.add(new StringListSetting.Builder()
         .name("health-message")
-        .description("Message to send when health action is set to chat.")
-        .defaultValue("")
+        .description("Messages to send when health action is set to chat.")
         .visible(() -> health.get() && aHealth.get() == Action.Chat)
         .build()
     );
@@ -117,16 +119,29 @@ public class AutoLeave extends Module {
         .build()
     );
 
-    private final Setting<String> cBlocks = leaveIf.add(new StringSetting.Builder()
+    private final Setting<List<String>> cBlocks = leaveIf.add(new StringListSetting.Builder()
         .name("block-message")
-        .description("Message to send when block action is set to chat.")
-        .defaultValue("")
+        .description("Messages to send when block action is set to chat.")
         .visible(() -> blocks.get() && aBlocks.get() == Action.Chat)
         .build()
     );
 
     public AutoLeave() {
         super(Kopateli.CATEGORY, "auto-leave", "Automatically leaves the server when certain conditions are met.");
+    }
+
+    @Override
+    public void onActivate() {
+        sendTimer = -1;
+        if (executor == null || executor.isShutdown())
+            executor = Executors.newSingleThreadExecutor();
+    }
+
+    @Override
+    public void onDeactivate() {
+        sendTimer = -1;
+        if (executor != null)
+            executor.shutdownNow();
     }
 
     @EventHandler
@@ -143,13 +158,21 @@ public class AutoLeave extends Module {
             process("in-block", aBlocks.get(), cBlocks.get());
     }
 
-    private void process(String reason, Action action, String cmd) {
+    private void process(String reason, Action action, List<String> cmds) {
         if (autoDisable.get()) toggle();
 
         switch (action) {
             case Leave -> mc.disconnect(Text.literal("AutoLeave | " + reason));
             case Hub -> send("/hub");
-            case Chat -> send(cmd);
+            case Chat -> {
+                for (String cmd : cmds) {
+                    executor.submit(() -> {
+                        send(cmd);
+                        try { Thread.sleep(200); }
+                        catch (Exception ignored) {}
+                    });
+                }
+            }
         }
     }
 
@@ -171,11 +194,12 @@ public class AutoLeave extends Module {
 
     private void send(String msg) {
         if (msg.isBlank()) return;
-        if (this.sendTimer != -1 && System.currentTimeMillis() - this.sendTimer < 1000) return;
+        if (this.sendTimer != -1 && mc.player.age - this.sendTimer < 20) return;
+
         if (msg.startsWith("/")) mc.player.networkHandler.sendChatCommand(msg.substring(1));
         else mc.player.networkHandler.sendChatMessage(msg);
 
-        this.sendTimer = System.currentTimeMillis();
+        this.sendTimer = mc.player.age;
     }
 
     public enum Action {

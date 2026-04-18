@@ -17,7 +17,7 @@ import org.wrzxas.settings.BiomeListSetting;
 import java.util.Set;
 
 public class AutoRTP extends Module {
-    private long lastTp = -1;
+    private int lastTp = -1;
     private boolean tp = false;
 
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -54,18 +54,18 @@ public class AutoRTP extends Module {
         RegistryKey<Biome> biome = mc.world.getBiome(mc.player.getBlockPos()).getKey().orElse(null);
         if (listMode.get() == ListMode.Blacklist && blacklist.get().contains(biome)) return;
         if (listMode.get() == ListMode.Whitelist && !whitelist.get().contains(biome)) return;
-        if (lastTp == -1 || System.currentTimeMillis() - lastTp >= 21000) {
+        if (lastTp == -1 || mc.player.age - lastTp >= 410) {
             tp = true;
             mc.player.networkHandler.sendChatCommand("rtp");
             tp = false;
-            lastTp = System.currentTimeMillis();
+            lastTp = mc.player.age;
         }
     }
 
     @EventHandler
     public void onEvent(PacketEvent.Send e) {
         if (!tp && e.packet instanceof CommandExecutionC2SPacket(String command) && command.equals("/rtp"))
-            lastTp = System.currentTimeMillis();
+            lastTp = mc.player.age;
     }
 
     public enum ListMode {
