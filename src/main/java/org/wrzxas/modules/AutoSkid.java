@@ -144,9 +144,9 @@ public class AutoSkid extends Module {
         if (!find.found()) return true;
         int slot = find.slot();
         SkidMode mode = skidMode.get();
-        if (mode == SkidMode.Drop)
+        if (mode == SkidMode.Drop) {
             InvUtils.drop().slot(slot);
-        else if (mode == SkidMode.Transfer) { // TODO
+        } else if (mode == SkidMode.Transfer) { // TODO
             info("Transfer mode is not supported now.");
             disable();
         }
