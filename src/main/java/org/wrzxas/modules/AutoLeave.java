@@ -2,6 +2,7 @@ package org.wrzxas.modules;
 
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,6 +38,13 @@ public class AutoLeave extends Module {
         .name("player-nearby")
         .description("Triggers when a player is within range.")
         .defaultValue(false)
+        .build()
+    );
+
+    private final Setting<Boolean> ignoreFriends = sgGeneral.add(new BoolSetting.Builder()
+        .name("ignore-friends")
+        .description("Do not leave if player is friend.")
+        .defaultValue(true)
         .build()
     );
 
@@ -177,8 +185,10 @@ public class AutoLeave extends Module {
     }
 
     private boolean anyPlayerInRange(float range) {
+        Friends friends = Friends.get();
         for (PlayerEntity e : mc.world.getPlayers()) {
-            if (mc.player != e && EntityPredicates.EXCEPT_SPECTATOR.test(e)
+            if (mc.player != e && !(ignoreFriends.get() && friends.isFriend(e))
+                && EntityPredicates.EXCEPT_SPECTATOR.test(e)
                 && EntityPredicates.VALID_LIVING_ENTITY.test(e)
                 && e.squaredDistanceTo(mc.player) < range * range)
                     return true;
