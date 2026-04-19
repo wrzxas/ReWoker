@@ -147,7 +147,7 @@ public class AutoSkid extends Module {
         if (mode == SkidMode.Drop) {
             InvUtils.drop().slot(slot);
         } else if (mode == SkidMode.Transfer) { // TODO
-            info("Transfer mode is not supported now.");
+            warning("Transfer mode is not supported now.");
             disable();
         }
         lastSkid = mc.player.age;

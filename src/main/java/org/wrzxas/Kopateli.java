@@ -14,7 +14,7 @@ public class Kopateli extends MeteorAddon {
         Modules m = Modules.get();
         m.add(new AutoRTP());
         m.add(new AutoLeave());
-        m.add(new AutoSkid());
+        // m.add(new AutoSkid());
     }
 
     @Override
