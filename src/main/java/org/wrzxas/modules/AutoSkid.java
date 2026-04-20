@@ -1,6 +1,7 @@
 package org.wrzxas.modules;
 
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.pathing.PathManagers;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.Utils;
@@ -23,15 +24,10 @@ public class AutoSkid extends Module {
     private int actionIdx = 0;
     private int hash = -1;
 
+    private boolean wasBaritone = false;
+
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
     private final SettingGroup sgActions = this.settings.createGroup("After skid");
-
-    private final Setting<SkidMode> skidMode = sgGeneral.add(new EnumSetting.Builder<SkidMode>()
-        .name("skid-mode")
-        .description("How to handle selected items.")
-        .defaultValue(SkidMode.Drop)
-        .build()
-    );
 
     private final Setting<DelayMode> delayMode = sgGeneral.add(new EnumSetting.Builder<DelayMode>()
         .name("delay-mode")
@@ -43,17 +39,25 @@ public class AutoSkid extends Module {
     private final Setting<Integer> skidDelay = sgGeneral.add(new IntSetting.Builder()
         .name("skid-delay")
         .description("Delay between each skid action.")
-        .range(0, 200)
+        .range(0, 12000)
+        .sliderRange(0, 200)
         .defaultValue(0)
         .build()
     );
 
     private final Setting<Integer> timerDelay = sgGeneral.add(new IntSetting.Builder()
         .name("timer-delay")
-        .description("How long to wait before starting.")
-        .range(0, 12000)
+        .description("How long to wait before start skid.")
+        .range(0, 200)
         .defaultValue(6000)
         .visible(() -> delayMode.get() == DelayMode.Timer)
+        .build()
+    );
+
+    private final Setting<Boolean> pauseBaritone = sgGeneral.add(new BoolSetting.Builder()
+        .name("pause-baritone")
+        .description("Paused baritone when skid items.")
+        .defaultValue(true)
         .build()
     );
 
@@ -139,17 +143,14 @@ public class AutoSkid extends Module {
     }
 
     private boolean skid() {
+        if (pauseBaritone.get() && PathManagers.get().isPathing() && !wasBaritone) {
+            wasBaritone = true;
+            PathManagers.get().pause();
+        }
         if (mc.player.age - lastSkid < skidDelay.get()) return false;
         FindItemResult find = InvUtils.find(skidItems.get().toArray(new Item[0]));
         if (!find.found()) return true;
-        int slot = find.slot();
-        SkidMode mode = skidMode.get();
-        if (mode == SkidMode.Drop) {
-            InvUtils.drop().slot(slot);
-        } else if (mode == SkidMode.Transfer) { // TODO
-            warning("Transfer mode is not supported now.");
-            disable();
-        }
+        InvUtils.drop().slot(find.slot());
         lastSkid = mc.player.age;
         return false;
     }
@@ -168,6 +169,10 @@ public class AutoSkid extends Module {
     }
 
     private boolean shouldSkid() {
+        if (pauseBaritone.get() && wasBaritone) {
+            wasBaritone = false;
+            PathManagers.get().resume();
+        }
         if (delayMode.get() == DelayMode.Timer)
             return lastTp != -1 && mc.player.age - lastTp >= timerDelay.get();
 
@@ -197,12 +202,23 @@ public class AutoSkid extends Module {
         else if (!msg.isBlank()) mc.player.networkHandler.sendChatMessage(msg);
     }
 
-    public enum SkidMode {
-        Drop, Transfer
-    }
-
     public enum DelayMode {
-        FullInv, Timer
+        FullInv, Timer;
+
+        @Override
+        public String toString() {
+            String name = name();
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 0; i < name.length(); i++) {
+                char c = name.charAt(i);
+                if (i > 0 && Character.isUpperCase(c))
+                    result.append(' ');
+                result.append(c);
+            }
+
+            return result.toString();
+        }
     }
 
     private enum State {
