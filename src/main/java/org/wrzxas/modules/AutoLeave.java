@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@SuppressWarnings("DataFlowIssue")
 public class AutoLeave extends Module {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private int sendTimer = -1;

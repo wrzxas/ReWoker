@@ -14,7 +14,6 @@ import org.wrzxas.ReWoker;
 
 import java.util.List;
 
-@SuppressWarnings("DataFlowIssue")
 public class AutoSkid extends Module {
     private long lastSkid = -1; // drop/store
     private long lastTp = -1; // place
