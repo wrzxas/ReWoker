@@ -10,7 +10,7 @@ import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.wrzxas.Kopateli;
+import org.wrzxas.ReWoker;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class AutoSkid extends Module {
     );
 
     public AutoSkid() {
-        super(Kopateli.CATEGORY, "auto-skid", "Automatically teleports, skids selected items, and runs actions after skid.");
+        super(ReWoker.CATEGORY, "auto-skid", "Automatically teleports, skids selected items, and runs actions after skid.");
     }
 
     @Override

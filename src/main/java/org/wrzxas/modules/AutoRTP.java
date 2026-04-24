@@ -11,7 +11,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import org.wrzxas.Kopateli;
+import org.wrzxas.ReWoker;
 import org.wrzxas.settings.BiomeListSetting;
 
 import java.util.Set;
@@ -44,7 +44,7 @@ public class AutoRTP extends Module {
     );
 
     public AutoRTP() {
-        super(Kopateli.CATEGORY, "auto-rtp", "Automatically send /rtp when player locate in some biomes.");
+        super(ReWoker.CATEGORY, "auto-rtp", "Automatically send /rtp when player locate in some biomes.");
     }
 
     @EventHandler

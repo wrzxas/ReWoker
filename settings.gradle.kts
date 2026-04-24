@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "kopateli"
+rootProject.name = "rewoker"

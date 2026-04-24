@@ -8,7 +8,7 @@ import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.Text;
-import org.wrzxas.Kopateli;
+import org.wrzxas.ReWoker;
 
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.orbit.EventHandler;
@@ -135,7 +135,7 @@ public class AutoLeave extends Module {
     );
 
     public AutoLeave() {
-        super(Kopateli.CATEGORY, "auto-leave", "Automatically leaves the server when certain conditions are met.");
+        super(ReWoker.CATEGORY, "auto-leave", "Automatically leaves the server when certain conditions are met.");
     }
 
     @Override

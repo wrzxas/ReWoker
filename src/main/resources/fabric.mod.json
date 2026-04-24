@@ -2,22 +2,22 @@
   "schemaVersion": 1,
   "id": "autortp-addon",
   "version": "${version}",
-  "name": "Kopateli",
+  "name": "RE_WOKER",
   "description": "копатели читмайн дексленд итд..",
   "authors": [
     "wrzxas"
   ],
   "contact": {
-    "sources": "https://github.com/wrzxas/Kopateli"
+    "sources": "https://github.com/wrzxas/ReWoker"
   },
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "org.wrzxas.Kopateli"
+      "org.wrzxas.ReWoker"
     ]
   },
   "mixins": [
-    "kopateli.mixins.json"
+    "rewoker.mixins.json"
   ],
   "custom": {
     "meteor-client:color": "225,25,25",

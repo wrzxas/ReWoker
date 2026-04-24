@@ -6,8 +6,8 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.wrzxas.modules.*;
 
-public class Kopateli extends MeteorAddon {
-    public static final Category CATEGORY = new Category("Копатели");
+public class ReWoker extends MeteorAddon {
+    public static final Category CATEGORY = new Category("RE_WOKER");
 
     @Override
     public void onInitialize() {
@@ -29,6 +29,6 @@ public class Kopateli extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("wrzxas", "Kopateli");
+        return new GithubRepo("wrzxas", "ReWoker");
     }
 }
