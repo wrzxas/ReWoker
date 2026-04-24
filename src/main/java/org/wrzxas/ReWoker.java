@@ -15,6 +15,7 @@ public class ReWoker extends MeteorAddon {
         m.add(new AutoRTP());
         m.add(new AutoLeave());
         m.add(new AutoSkid());
+        m.add(new ElytraBooster());
     }
 
     @Override
